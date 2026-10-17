@@ -1,0 +1,27 @@
+services:
+  server:
+    build: ./server
+    container_name: expense-server
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - DATABASE_PATH=/app/data/expenses.db
+      - RECEIPTS_DIR=/app/data/receipts
+    env_file:
+      - .env
+    volumes:
+      - expense-data:/app/data
+    ports:
+      - "3000:3000"
+
+  web:
+    build: ./web
+    container_name: expense-web
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "8080:80"
+
+volumes:
+  expense-data:
